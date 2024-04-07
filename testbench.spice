@@ -1,0 +1,39 @@
+* Tiny Tapeout ROM testbench
+* Run with `make sim_nand`
+
+.include "pdk_lib.spice"
+
+* Power supply
+V1 VGND 0 0
+V2 VPWR VGND 1.8
+
+.include "tt_um_chip_rom.spice"
+
+x1 VPWR VGND clk ena rst_n
++ addr0 addr1 addr2 addr3 addr4 addr5 addr6 addr7
++ VGND VGND VGND VGND VGND VGND VGND VGND
++ uio_oe[0] uio_oe[1] uio_oe[2] uio_oe[3] uio_oe[4] uio_oe[5] uio_oe[6] uio_oe[7]
++ uio_out[0] uio_out[1] uio_out[2] uio_out[3] uio_out[4] uio_out[5] uio_out[6] uio_out[7]
++ data0 data1 data2 data3 data4 data5 data6 data7
++ tt_um_chip_rom
+
+* Iterate over all possible ROM addresses
+V3  addr0 VGND PULSE(0 1.8 0 0 0 10n 20n)
+V4  addr1 VGND PULSE(0 1.8 0 0 0 20n 40n)
+V5  addr2 VGND PULSE(0 1.8 0 0 0 40n 80n)
+V6  addr3 VGND PULSE(0 1.8 0 0 0 80n 160n)
+V7  addr4 VGND PULSE(0 1.8 0 0 0 160n 320n)
+V8  addr5 VGND PULSE(0 1.8 0 0 0 320n 640n)
+V9  addr6 VGND PULSE(0 1.8 0 0 0 640n 1280n)
+V10 addr7 0 0  ; always 0, we are only reading the lower 128 bytes
+
+.tran 1n 1280n
+
+.control
+run
+plot addr0 addr1 addr2 addr3 addr4 addr5 addr6 addr7
+plot data0 data1 data2 data3 data4 data5 data6 data7
+.endc
+.end
+
+.end
