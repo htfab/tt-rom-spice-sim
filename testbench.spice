@@ -9,7 +9,7 @@ V2 VPWR VGND 1.8
 
 .include "tt_um_chip_rom.spice"
 
-x1 VPWR VGND clk ena rst_n
+x1 VGND VPWR clk ena rst_n
 + addr0 addr1 addr2 addr3 addr4 addr5 addr6 addr7
 + VGND VGND VGND VGND VGND VGND VGND VGND
 + uio_oe[0] uio_oe[1] uio_oe[2] uio_oe[3] uio_oe[4] uio_oe[5] uio_oe[6] uio_oe[7]
