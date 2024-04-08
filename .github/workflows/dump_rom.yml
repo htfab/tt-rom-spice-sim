@@ -1,0 +1,60 @@
+name: dump_dump
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  dump_rom:
+    runs-on: ubuntu-latest
+    env:
+      PDK_ROOT: '${{ github.workspace }}/pdk'
+      PDK_VERSION: '6d4d11780c40b20ee63cc98e645307a9bf2b2ab8'
+      KLAYOUT_VERSION: '0.28.17'
+      MAGIC_VERSION: '8.3.460'
+      NGSPICE_VERSION: '42'
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Sky130 PDK
+        uses: TinyTapeout/volare-action@v2
+        with:
+          pdk_name: sky130
+          pdk_version: ${{ env.PDK_VERSION }}
+          pdk_root: ${{ env.PDK_ROOT }}
+
+      - name: Install magic
+        run: |
+          sudo apt-get install -y m4 python3 libx11-dev tcl-dev tk-dev libcairo2-dev mesa-common-dev libglu1-mesa-dev
+          git clone -b $MAGIC_VERSION https://github.com/RTimothyEdwards/magic magic
+          cd magic
+          ./configure
+          make -j4 
+          sudo make install
+
+      - name: Install ngspice
+        run: |
+          sudo apt-get install -y build-essential libxaw7-dev libreadline-dev autoconf automake libtool flex bison
+          git clone -b ngspice-$NGSPICE_VERSION git://git.code.sf.net/p/ngspice/ngspice ngspice
+          cd ngspice
+          ./autogen.sh
+          mkdir release
+          cd release
+          ../configure --with-x --enable-xspice --disable-debug --enable-cider --with-readline=yes --enable-openmp --enable-osdi
+          make -j4
+          sudo make install
+
+      - name: Install klayout
+        run: |
+          curl -o /tmp/klayout.deb https://www.klayout.org/downloads/Ubuntu-22/klayout_$KLAYOUT_VERSION-1_amd64.deb
+          sudo apt-get install -y /tmp/klayout.deb
+
+      - name: simulate & dump rom
+        run: make
+
+      - name: Dump ROM as hex
+        run: hd rom.bin
