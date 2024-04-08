@@ -53,13 +53,13 @@ jobs:
           curl -o /tmp/klayout.deb https://www.klayout.org/downloads/Ubuntu-22/klayout_$KLAYOUT_VERSION-1_amd64.deb
           sudo apt-get install -y /tmp/klayout.deb
 
-      - name: simulate & dump rom
+      - name: Simulate & dump rom
         run: make
 
       - name: Dump ROM as hex
         run: |
           echo "## ROM Dump" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           hd -v rom.bin | tee -a $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
