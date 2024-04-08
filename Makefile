@@ -7,8 +7,13 @@ endif
 
 sim: tt_um_chip_rom.spice
 	echo ".lib '$(PDK_ROOT)/sky130A/libs.tech/ngspice/sky130.lib.spice' tt" > pdk_lib.spice
-	ngspice testbench.spice
+	ngspice -b testbench.spice
+	python rom_dump.py
+
 .phony: sim
+
+extract: openframe_project_wrapper.gds
+	klayout -b -r rom_extract.py -rd "cell_name=tt_um_chip_rom" $<
 
 tt_um_chip_rom.spice: tt_um_chip_rom.gds
 	./extract_spice.sh

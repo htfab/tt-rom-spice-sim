@@ -1,2 +1,5 @@
 extfiles/*
 pdk_lib.spice
+rom_signals.txt
+rom.bin
+openframe_project_wrapper.gds

@@ -17,22 +17,28 @@ x1 VGND VPWR clk ena rst_n
 + data0 data1 data2 data3 data4 data5 data6 data7
 + tt_um_chip_rom
 
-* Iterate over all possible ROM addresses
-V3  addr0 VGND PULSE(0 1.8 0 0 0 10n 20n)
-V4  addr1 VGND PULSE(0 1.8 0 0 0 20n 40n)
-V5  addr2 VGND PULSE(0 1.8 0 0 0 40n 80n)
-V6  addr3 VGND PULSE(0 1.8 0 0 0 80n 160n)
-V7  addr4 VGND PULSE(0 1.8 0 0 0 160n 320n)
-V8  addr5 VGND PULSE(0 1.8 0 0 0 320n 640n)
-V9  addr6 VGND PULSE(0 1.8 0 0 0 640n 1280n)
-V10 addr7 0 0  ; always 0, we are only reading the lower 128 bytes
+* Tie the clock to ground, ena/rst_n to power
+Vtie_clk clk 0 0
+Vtie_ena ena VPWR 0
+Vtie_rst_n rst_n VPWR 0
 
-.tran 1n 1280n
+* Iterate over all possible ROM addresses
+V3  addr0 VGND PULSE(0 1.8 10n  0 0 10n  20n)
+V4  addr1 VGND PULSE(0 1.8 20n  0 0 20n  40n)
+V5  addr2 VGND PULSE(0 1.8 40n  0 0 40n  80n)
+V6  addr3 VGND PULSE(0 1.8 80n  0 0 80n  160n)
+V7  addr4 VGND PULSE(0 1.8 160n 0 0 160n 320n)
+V8  addr5 VGND PULSE(0 1.8 320n 0 0 320n 640n)
+V9  addr6 VGND PULSE(0 1.8 640n 0 0 640n 1280n)
+V10 addr7 0 0  ; always 0, as we are only reading the lower 128 bytes
+
+.tran 5n 1280n
 
 .control
 run
-plot addr0 addr1 addr2 addr3 addr4 addr5 addr6 addr7
-plot data0 data1 data2 data3 data4 data5 data6 data7
+set wr_vecnames
+set wr_singlescale
+wrdata rom_signals.txt addr0 addr1 addr2 addr3 addr4 addr5 addr6 addr7 data0 data1 data2 data3 data4 data5 data6 data7
 .endc
 .end
 
