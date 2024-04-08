@@ -57,4 +57,9 @@ jobs:
         run: make
 
       - name: Dump ROM as hex
-        run: hd rom.bin
+        run: |
+          echo "## ROM Dump" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          hd -v rom.bin | tee -a $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
