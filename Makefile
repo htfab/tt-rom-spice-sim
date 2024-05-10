@@ -13,7 +13,7 @@ sim: tt_um_chip_rom.spice
 .phony: sim
 
 extract: openframe_project_wrapper.gds
-	klayout -b -r rom_extract.py -rd "cell_name=tt_um_chip_rom" $<
+	klayout -b -r rom_extract.py $<
 
 tt_um_chip_rom.spice: tt_um_chip_rom.gds
 	./extract_spice.sh
