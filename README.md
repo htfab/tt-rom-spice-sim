@@ -1,6 +1,6 @@
-# tt06-rom-spice-sim
+# tt-rom-spice-sim
 
-Simulates Tiny Tapeout 6 ROM with ngspice, to dump the ROM contents.
+Simulates Tiny Tapeout ROM with ngspice, to dump the ROM contents.
 
 ## Dumping the ROM contents
 
@@ -17,3 +17,5 @@ It will also generate a `rom.bin` file with the ROM contents.
 ## Extracting the ROM from a Tiny Tapeout GDS file
 
 Copy "openframe_project_wrapper.gds" to the current directory, and run `make extract`. This will extract the ROM contents from the GDS file into `tt_um_chip_rom.gds` using a [klayout script](./rom_extract.py).
+
+You can also extract from a specific GDS os OAS file by running `make extract GDS_FILE=yourfile.gds` or `make extract GDS_FILE=yourfile.oas`.

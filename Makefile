@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Author: Uri Shaked
 
+GDS_FILE ?= openframe_project_wrapper.gds
+
 ifndef PDK_ROOT
 $(error PDK_ROOT is not set.  Please set PDK_ROOT to the root directory of the PDK (e.g. ~/.volare))
 endif
@@ -12,7 +14,7 @@ sim: tt_um_chip_rom.spice
 
 .phony: sim
 
-extract: openframe_project_wrapper.gds
+extract: $(GDS_FILE)
 	klayout -b -r rom_extract.py $<
 
 tt_um_chip_rom.spice: tt_um_chip_rom.gds
