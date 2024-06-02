@@ -3,6 +3,10 @@ name: dump_rom
 on:
   push:
   workflow_dispatch:
+    inputs:
+      shuttle_id:
+        description: 'Shuttle ID'
+        required: false
 
 jobs:
   dump_rom:
@@ -52,6 +56,27 @@ jobs:
         run: |
           curl -o /tmp/klayout.deb https://www.klayout.org/downloads/Ubuntu-22/klayout_$KLAYOUT_VERSION-1_amd64.deb
           sudo apt-get install -y /tmp/klayout.deb
+      
+      - name: Download shuttle OAS file
+        if: ${{ github.event.inputs.shuttle_id }}
+        run: |
+          echo "Fetching shuttle info: ${{ github.event.inputs.shuttle_id }}"
+          OAS_URL=$(
+            curl https://index.tinytapeout.com/ \
+            | jq -r '.shuttles[] | select(.id == "${{ github.event.inputs.shuttle_id }}") | .gds_url')
+
+          if [ -z "$OAS_URL" ]; then
+            echo "Shuttle not found: ${{ github.event.inputs.shuttle_id }}"
+            exit 1
+          fi
+
+          echo "Downloading OAS file: $OAS_URL"
+          curl -L -o $GITHUB_WORKSPACE/tt_final.oas $OAS_URL
+          echo GDS_FILE=$GITHUB_WORKSPACE/tt_final.oas >> $GITHUB_ENV
+
+      - name: Extract the ROM from the GDS
+        if: ${{ env.GDS_FILE }}
+        run: make extract
 
       - name: Simulate & dump rom
         run: make
