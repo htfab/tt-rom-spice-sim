@@ -24,8 +24,8 @@ with open("rom_signals.txt", 'r') as romfile:
         if addr is not None and value is not None:
           data[addr] = value
 
-rom_data = bytearray(128)
-for byte_idx in range(0, 128):
+rom_data = bytearray(256)
+for byte_idx in range(0, len(rom_data)):
     rom_data[byte_idx] = data.get(byte_idx, 0)
 
 with open("rom.bin", 'wb') as romfile:
@@ -36,5 +36,5 @@ print("".join(f"{byte:02x}" for byte in rom_data[:32]))
 print("")
 
 # dump text
-rom_text = rom_data[32:].rstrip(b"\0").decode('ascii')
+rom_text = rom_data[32:128].rstrip(b"\0").decode('ascii')
 print(rom_text)
