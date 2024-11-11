@@ -1,12 +1,4 @@
 #! /bin/bash
-rm -rf extfiles
-
-magic -dnull -noconsole -rcfile $PDK_ROOT/sky130A/libs.tech/magic/sky130A.magicrc << EOF
-gds read tt_um_chip_rom.gds
-load tt_um_chip_rom
-readspice tt_um_chip_rom_ports.spice
-extract path extfiles
-extract all
-ext2spice lvs
-ext2spice -p extfiles
-EOF
+#klayout -b -r $PDK_ROOT/ihp-sg13g2/libs.tech/klayout/tech/lvs/sg13g2_full.lylvs -rd in_gds=tt_um_chip_rom.gds -rd target_netlist=tt_um_chip_rom.spice -rd run_mode=deep -rd cdl_file=tt_um_chip_rom_ports.spice
+klayout -b -r sg13g2_full.lylvs -rd in_gds=tt_um_chip_rom.gds -rd target_netlist=tt_um_chip_rom.spice -rd run_mode=deep -rd net_only=true
+sed -i 's/^M\$/X&/' tt_um_chip_rom.spice
